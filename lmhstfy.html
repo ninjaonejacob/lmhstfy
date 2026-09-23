@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Let Me Highspot That For You</title>
+<meta property="og:title" content="Let Me Highspot That For You">
+<meta property="og:description" content="Someone thought you could use a little help finding things...">
+<style>
+  :root{color-scheme:light}*{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8f9fa;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#1a1a2e;overflow:hidden}
+
+  /* Creator */
+  #creator{text-align:center;padding:2rem 1.5rem;width:100%;max-width:560px}
+  #creator h1{font-size:1.6rem;font-weight:700;margin-bottom:.3rem}
+  #creator .sub{font-size:.85rem;color:#6b7280;margin-bottom:2rem}
+  .input-row{display:flex;gap:.5rem}
+  .input-row input{flex:1;padding:.7rem 1rem;border:2px solid #e0e0e0;border-radius:8px;font-size:.95rem;outline:none;transition:border-color .2s}
+  .input-row input:focus{border-color:#00b4d8}
+  .input-row button{padding:.7rem 1.2rem;background:#00b4d8;color:#fff;border:none;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .2s}
+  .input-row button:hover{background:#0096b7}
+  #link-out{display:none;margin-top:1.2rem;padding:1rem;background:#fff;border:2px solid #00b4d8;border-radius:10px;text-align:left;animation:fs .3s ease}
+  #link-out .lbl{font-size:.7rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem}
+  .link-row{display:flex;gap:.5rem;align-items:center}
+  #link-text{flex:1;padding:.5rem .7rem;background:#f0f9ff;border:1px solid #e0e0e0;border-radius:6px;font-size:.75rem;font-family:'SF Mono','Fira Code',monospace;color:#1a1a2e;word-break:break-all;user-select:all}
+  #copy-btn{padding:.5rem .9rem;background:#10b981;color:#fff;border:none;border-radius:6px;font-size:.8rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .2s}
+  #copy-btn:hover{background:#059669}
+  #copy-btn.done{background:#6b7280}
+
+  /* Animation */
+  #anim{display:none;text-align:center;padding:2rem 1.5rem;width:100%;max-width:600px}
+  .logo{margin-bottom:1.5rem}
+  .logo span{font-size:2.2rem;font-weight:700;color:#1a1a2e;letter-spacing:-.02em}
+  .logo .a{color:#00b4d8}
+  .sb{display:flex;align-items:center;background:#fff;border:2px solid #e0e0e0;border-radius:12px;padding:.15rem;box-shadow:0 2px 12px rgba(0,0,0,.06);transition:border-color .3s,box-shadow .3s;overflow:hidden}
+  .sb.f{border-color:#00b4d8;box-shadow:0 2px 20px rgba(0,180,216,.15)}
+  .si{padding:.6rem .2rem .6rem .9rem;display:flex;align-items:center}
+  .si svg{width:20px;height:20px;color:#9ca3af;transition:color .3s}
+  .sb.f .si svg{color:#00b4d8}
+  #typed{font-size:1rem;color:#1a1a2e;white-space:pre}
+  .cb{display:none;width:2px;height:1.1em;background:#00b4d8;margin-left:1px;vertical-align:text-bottom;animation:bk .7s step-end infinite}
+  @keyframes bk{50%{opacity:0}}
+  #sbtn{padding:.6rem 1.3rem;background:#e8e8e8;color:#6b7280;border:none;border-radius:9px;font-size:.9rem;font-weight:600;cursor:default;transition:background .3s,color .3s,transform .15s;margin:.15rem}
+  #sbtn.a{background:#00b4d8;color:#fff}
+  #sbtn.c{transform:scale(.95)}
+  #snark{display:none;margin-top:2rem;font-size:1.15rem;font-weight:600;color:#6b7280;animation:fs .4s ease}
+  #snark em{font-style:normal;color:#00b4d8}
+  #redir{display:none;margin-top:.8rem;font-size:.85rem;color:#9ca3af;animation:fs .3s ease .3s both}
+  @keyframes fs{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  #fc{display:none;position:fixed;width:20px;height:20px;pointer-events:none;z-index:9999}
+  #fc svg{width:20px;height:20px;filter:drop-shadow(1px 2px 2px rgba(0,0,0,.25))}
+  .ft{position:fixed;bottom:.8rem;font-size:.65rem;color:#d0d0d0}
+</style>
+</head>
+<body>
+
+<div id="creator">
+  <h1>Let Me Highspot That For You</h1>
+  <p class="sub">Type what they should've searched. Send the link in Slack.</p>
+  <div class="input-row">
+    <input type="text" id="qi" placeholder="e.g. ConnectWise battlecard" autocomplete="off"/>
+    <button id="gen">Generate Link</button>
+  </div>
+  <div id="link-out">
+    <div class="lbl">Share this link</div>
+    <div class="link-row">
+      <div id="link-text"></div>
+      <button id="copy-btn">Copy</button>
+    </div>
+  </div>
+</div>
+
+<div id="anim">
+  <div class="logo"><span>High<span class="a">spot</span></span></div>
+  <div class="sb" id="sb">
+    <div class="si"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg></div>
+    <div style="flex:1;display:flex;align-items:center;min-height:2.4rem"><span id="typed"></span><span class="cb" id="cur"></span></div>
+    <button id="sbtn">Search</button>
+  </div>
+  <div id="snark">Was that so hard? <em>;)</em></div>
+  <div id="redir">Taking you to Highspot...</div>
+</div>
+
+<div id="fc"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L6.35 2.86a.5.5 0 0 0-.85.35Z" fill="#1a1a2e" stroke="#fff" stroke-width="1"/></svg></div>
+<div class="ft">LMHSTFY</div>
+
+<script>
+(function(){
+  // ✏️ SET THIS to your GitHub Pages URL once hosted:
+  var BASE_URL='https://ninjaonejacob.github.io/lmhstfy/lmhstfy.html';
+  var HS='https://ninjaone.highspot.com/search?q=';
+  var p=new URLSearchParams(window.location.search);
+  var q=p.get('q');
+
+  if(q){
+    // ── Animation mode ──
+    document.getElementById('creator').style.display='none';
+    var av=document.getElementById('anim');av.style.display='block';
+    var sb=document.getElementById('sb'),t=document.getElementById('typed'),cur=document.getElementById('cur'),btn=document.getElementById('sbtn'),fc=document.getElementById('fc'),snark=document.getElementById('snark'),redir=document.getElementById('redir');
+
+    setTimeout(function(){
+      fc.style.display='block';fc.style.transition='none';
+      fc.style.left=(window.innerWidth*.65)+'px';fc.style.top=(window.innerHeight*.72)+'px';
+      var r=sb.getBoundingClientRect();
+      setTimeout(function(){
+        fc.style.transition='left .8s cubic-bezier(.25,.1,.25,1),top .8s cubic-bezier(.25,.1,.25,1)';
+        fc.style.left=(r.left+100)+'px';fc.style.top=(r.top+r.height/2)+'px';
+        setTimeout(function(){
+          sb.classList.add('f');fc.style.display='none';cur.style.display='inline-block';
+          setTimeout(function(){
+            var i=0,sp=Math.max(45,Math.min(85,2200/q.length));
+            var iv=setInterval(function(){
+              if(i<q.length){t.textContent+=q[i];i++}
+              else{clearInterval(iv);cur.style.display='none';btn.classList.add('a');
+                setTimeout(function(){
+                  fc.style.display='block';fc.style.transition='none';
+                  var tr=t.getBoundingClientRect();
+                  fc.style.left=(tr.right+5)+'px';fc.style.top=(tr.top+5)+'px';
+                  setTimeout(function(){
+                    var br=btn.getBoundingClientRect();
+                    fc.style.transition='left .6s cubic-bezier(.25,.1,.25,1),top .6s cubic-bezier(.25,.1,.25,1)';
+                    fc.style.left=(br.left+br.width/2)+'px';fc.style.top=(br.top+br.height/2)+'px';
+                    setTimeout(function(){
+                      btn.classList.add('c');setTimeout(function(){btn.classList.remove('c')},150);
+                      fc.style.display='none';
+                      setTimeout(function(){
+                        snark.style.display='block';
+                        redir.style.display='block';
+                        // Direct navigate — works because we're on a real webpage
+                        setTimeout(function(){
+                          window.location.href=HS+encodeURIComponent(q);
+                        },1800);
+                      },400);
+                    },700);
+                  },50);
+                },400);
+              }
+            },sp);
+          },500);
+        },900);
+      },300);
+    },600);
+
+  } else {
+    // ── Creator mode ──
+    var qi=document.getElementById('qi'),gen=document.getElementById('gen'),lo=document.getElementById('link-out'),lt=document.getElementById('link-text'),cb=document.getElementById('copy-btn');
+    qi.focus();
+    qi.addEventListener('keydown',function(e){if(e.key==='Enter')mk()});
+    gen.addEventListener('click',mk);
+    cb.addEventListener('click',cp);
+
+    function mk(){
+      var v=qi.value.trim();if(!v)return;
+      var link=BASE_URL+'?q='+encodeURIComponent(v);
+      lt.textContent=link;
+      lo.style.display='block';
+    }
+    function cp(){
+      navigator.clipboard.writeText(lt.textContent).then(function(){
+        cb.textContent='Copied!';cb.classList.add('done');
+        setTimeout(function(){cb.textContent='Copy';cb.classList.remove('done')},2000);
+      });
+    }
+  }
+})();
+</script>
+</body>
+</html>
